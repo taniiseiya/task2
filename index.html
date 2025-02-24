@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>先延ばし克服コーチングツール</title>
+    <!-- React と ReactDOM の読み込み -->
+    <script
+      crossorigin
+      src="https://unpkg.com/react@17/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+    ></script>
+    <!-- Babel の読み込み（JSX を利用するため） -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      input,
+      button {
+        padding: 10px;
+        font-size: 16px;
+      }
+      section {
+        margin-bottom: 40px;
+      }
+      h1, h2 {
+        color: #333;
+      }
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+      li {
+        margin: 5px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      function App() {
+        // 目標設定の状態管理
+        const [goals, setGoals] = React.useState([]);
+        const [goalInput, setGoalInput] = React.useState('');
+
+        // 感情ジャーナルの状態管理
+        const [emotionEntries, setEmotionEntries] = React.useState([]);
+        const [emotionInput, setEmotionInput] = React.useState('');
+        const [emotionRating, setEmotionRating] = React.useState(5);
+
+        // 目標追加処理
+        const handleGoalSubmit = (e) => {
+          e.preventDefault();
+          if (goalInput.trim() !== '') {
+            setGoals([...goals, { text: goalInput, id: Date.now() }]);
+            setGoalInput('');
+          }
+        };
+
+        // 感情ジャーナル追加処理
+        const handleEmotionSubmit = (e) => {
+          e.preventDefault();
+          if (emotionInput.trim() !== '') {
+            setEmotionEntries([
+              ...emotionEntries,
+              { text: emotionInput, rating: emotionRating, id: Date.now() },
+            ]);
+            setEmotionInput('');
+            setEmotionRating(5);
+          }
+        };
+
+        return (
+          <div>
+            <h1>先延ばし克服コーチングツール</h1>
+
+            {/* 目標設定セクション */}
+            <section>
+              <h2>目標設定</h2>
+              <form onSubmit={handleGoalSubmit}>
+                <input
+                  type="text"
+                  placeholder="新しい目標を入力..."
+                  value={goalInput}
+                  onChange={(e) => setGoalInput(e.target.value)}
+                />
+                <button type="submit" style={{ marginLeft: '10px' }}>
+                  追加
+                </button>
+              </form>
+              <ul>
+                {goals.map((goal) => (
+                  <li key={goal.id}>{goal.text}</li>
+                ))}
+              </ul>
+            </section>
+
+            {/* 感情ジャーナルセクション */}
+            <section>
+              <h2>感情ジャーナル</h2>
+              <form onSubmit={handleEmotionSubmit}>
+                <input
+                  type="text"
+                  placeholder="今感じていること..."
+                  value={emotionInput}
+                  onChange={(e) => setEmotionInput(e.target.value)}
+                />
+                <label style={{ marginLeft: '10px' }}>
+                  感情評価 (1-10):
+                  <input
+                    type="number"
+                    min="1"
+                    max="10"
+                    value={emotionRating}
+                    onChange={(e) =>
+                      setEmotionRating(Number(e.target.value))
+                    }
+                    style={{ width: '50px', marginLeft: '5px' }}
+                  />
+                </label>
+                <button type="submit" style={{ marginLeft: '10px' }}>
+                  記録
+                </button>
+              </form>
+              <ul>
+                {emotionEntries.map((entry) => (
+                  <li key={entry.id}>
+                    {entry.text} - 感情評価: {entry.rating}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          </div>
+        );
+      }
+
+      ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+  </body>
+</html>
